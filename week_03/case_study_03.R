@@ -3,7 +3,7 @@ library(gapminder)
 library(dplyr)
 
 
-gapmider_without_kuwait <- gapminder %>% filter(continent != "Kuwait") %>% filter(gdpPercap<=50000)
+gapmider_without_kuwait <- gapminder %>% filter(country != "Kuwait") 
 
 
 plot1 <- ggplot(gapmider_without_kuwait, aes(x=lifeExp,y=gdpPercap,color=continent,size=pop/100000)) +
@@ -24,7 +24,6 @@ ggsave(
 
 gapminder_continent <- gapmider_without_kuwait %>%
   group_by(continent,year) %>%
-  filter(gdpPercap<=50000) %>%
   summarise(gdpPercapweighted = weighted.mean(x = gdpPercap, w = pop),
             pop = sum(as.numeric(pop)))
 
@@ -47,3 +46,5 @@ ggsave(
   height = 7,            
   units = "in"   
 )
+
+
