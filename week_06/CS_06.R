@@ -4,17 +4,15 @@ library(spData)
 library(tidyverse)
 library(sf)
 
-data(world)  #load 'world' data from spData package
-
+library(ncdf4)
+data(world)
+download.file("https://crudata.uea.ac.uk/cru/data/temperature/absolute.nc","crudata.nc")
+tmean=raster("crudata.nc")
+names(tmean) <- "tmean"
 world_without_Antarctica <- world %>% filter(continent != "Antarctica")
 
-tmax_monthly <- getData(name = "worldclim", var="tmax", res=10)
-
-tmax_monthly_max <- max(tmax_monthly)
-
-tmax_monthly_max <- tmax_monthly_max / 10
-names(tmax_monthly_max) <- "tmax"
-tmax_monthly_max <- raster::extract(tmax_monthly_max,world_without_Antarctica,fun=max,na.rm=T, small=T, sp=T)
+names(tmean) <- "tmax"
+tmax_monthly_max <- raster::extract(tmean,world_without_Antarctica,fun=max,na.rm=T, small=T, sp=T)
 
 tmax_monthly_max <- st_as_sf(tmax_monthly_max)
 
